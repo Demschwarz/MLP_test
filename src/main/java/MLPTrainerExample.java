@@ -12,6 +12,7 @@ import org.apache.ignite.ml.math.primitives.matrix.impl.DenseMatrix;
 import org.apache.ignite.ml.math.primitives.vector.Vector;
 import org.apache.ignite.ml.math.primitives.vector.VectorUtils;
 import org.apache.ignite.ml.math.primitives.vector.impl.DenseVector;
+import org.apache.ignite.ml.multiclass.OneVsRestTrainer;
 import org.apache.ignite.ml.nn.Activators;
 import org.apache.ignite.ml.nn.MLPTrainer;
 import org.apache.ignite.ml.nn.MultilayerPerceptron;
@@ -21,6 +22,7 @@ import org.apache.ignite.ml.optimization.LossFunctions;
 import org.apache.ignite.ml.optimization.updatecalculators.SimpleGDParameterUpdate;
 import org.apache.ignite.ml.optimization.updatecalculators.SimpleGDUpdateCalculator;
 import org.apache.ignite.ml.structures.LabeledVector;
+import org.apache.ignite.ml.svm.SVMLinearClassificationModel;
 
 import java.io.FileNotFoundException;
 
@@ -40,7 +42,6 @@ import java.io.FileNotFoundException;
  * <p>
  * Remote nodes should always be started with special configuration file which enables P2P class loading: {@code
  * 'ignite.{sh|bat} examples/config/example-ignite.xml'}.</p>
-
  */
 public class MLPTrainerExample {
     /**
@@ -69,7 +70,7 @@ public class MLPTrainerExample {
 //                trainingSet = ignite.createCache(trainingSetCfg);
 
                 // working with dataCache
-                dataCache = new SandboxMLCache(ignite).fillCacheWith(MLSandboxDatasets.MNIST_TRAIN_200);
+                dataCache = new SandboxMLCache(ignite).fillCacheWith(MLSandboxDatasets.MNIST_TRAIN_12_TRUE);
 //                dataCache = ignite.createCache(trainingSetCfg).fillCacheWith(MLSandboxDatasets.MNIST_TRAIN_12);
 
 //                // Fill cache with training data.
@@ -79,9 +80,13 @@ public class MLPTrainerExample {
 //                trainingSet.put(3, new LabeledVector<>(VectorUtils.of(1, 1), new double[] {0}));
 
                 // Define a layered architecture.
-                MLPArchitecture arch = new MLPArchitecture(784).
-                        withAddedLayer(9, true, Activators.RELU).
-                        withAddedLayer(1, false, Activators.RELU);
+                MLPArchitecture arch = new MLPArchitecture(784)
+//                MLPArchitecture arch = new MLPArchitecture(2)
+                        .withAddedLayer(10, true, Activators.RELU)
+                        .withAddedLayer(10, true, Activators.RELU)
+                        .withAddedLayer(1, false, Activators.SIGMOID)
+//                        .withAddedLayer(10, false, Activators.SIGMOID)
+                        ;
 
                 // Define a neural network trainer.
                 MLPTrainer<SimpleGDParameterUpdate> trainer = new MLPTrainer<>(
@@ -92,11 +97,12 @@ public class MLPTrainerExample {
                                 SimpleGDParameterUpdate.SUM_LOCAL,
                                 SimpleGDParameterUpdate.AVG
                         ),
-                        30000,
+                        3000,
                         4,
                         50,
                         123L
                 );
+                
 
                 // Train neural network and get multilayer perceptron model.
 //                MultilayerPerceptron mlp = trainer.fit(ignite, trainingSet, new LabeledDummyVectorizer<>());
@@ -115,15 +121,18 @@ public class MLPTrainerExample {
 //                                pnt.features().get(0),
 //                                    pnt.features().get(1)}}));
 //                    Matrix predicted = mlp.predict(new DenseMatrix(
-//                                                pnt.features().asArray(), 1));
-                    Matrix predicted = mlp.predict(pnt.features().toMatrix(true));
+//                                                pnt.features().asArray(), 10));
+                    Matrix predicted = mlp.predict(new DenseMatrix(
+//                                                new double[][]{pnt.features().asArray(), {}, {}, {}, {}, {}, {}, {}, {}, {}}));
+                            new double[][]{pnt.features().asArray()}));
+//                    Matrix predicted = mlp.predict(pnt.features().toMatrix(true));
                     double predictedVal = predicted.get(0, 0);
                     double lbl = pnt.label()[0];
                     System.out.printf(">>> key: %d\t\t predicted: %.4f\t\tlabel: %.4f\n", i, predictedVal, lbl);
                     failCnt += Math.abs(predictedVal - lbl) < 0.5 ? 0 : 1;
                 }
 
-                double failRatio = (double)failCnt / totalCnt;
+                double failRatio = (double) failCnt / totalCnt;
 
                 System.out.println("\n>>> Fail percentage: " + (failRatio * 100) + "%.");
                 System.out.println("\n>>> Distributed multilayer perceptron example completed.");
@@ -132,9 +141,9 @@ public class MLPTrainerExample {
             } finally {
                 System.out.println("\n>>> TaDAA.");
             }
-        }
-        finally {
+        } finally {
             System.out.flush();
+            System.exit(0);
         }
     }
 }

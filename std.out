@@ -1,0 +1,46 @@
+>>> Distributed multilayer perceptron example started.
+[18:47:52]    __________  ________________ 
+[18:47:52]   /  _/ ___/ |/ /  _/_  __/ __/ 
+[18:47:52]  _/ // (7 7    // /  / / / _/   
+[18:47:52] /___/\___/_/|_/___/ /_/ /___/  
+[18:47:52] 
+[18:47:52] ver. 2.8.1#20200521-sha1:86422096
+[18:47:52] 2020 Copyright(C) Apache Software Foundation
+[18:47:52] 
+[18:47:52] Ignite documentation: http://ignite.apache.org
+[18:47:52] 
+[18:47:52] Quiet mode.
+[18:47:52]   ^-- Logging by 'JavaLogger [quiet=true, config=null]'
+[18:47:52]   ^-- To see **FULL** console log here add -DIGNITE_QUIET=false or "-v" to ignite.{sh|bat}
+[18:47:52] 
+[18:47:52] OS: Windows 10 10.0 amd64
+[18:47:52] VM information: Java(TM) SE Runtime Environment 1.8.0_311-b11 Oracle Corporation Java HotSpot(TM) 64-Bit Server VM 25.311-b11
+[18:47:52] Please set system property '-Djava.net.preferIPv4Stack=true' to avoid possible problems in mixed environments.
+[18:47:52] Initial heap size is 256MB (should be no less than 512MB, use -Xms512m -Xmx512m).
+[18:47:52] Configured plugins:
+[18:47:52]   ^-- ml-inference-plugin 1.0.0
+[18:47:52]   ^-- null
+[18:47:52] 
+[18:47:52] Configured failure handler: [hnd=StopNodeOrHaltFailureHandler [tryStop=false, timeout=0, super=AbstractFailureHandler [ignoredFailureTypes=UnmodifiableSet [SYSTEM_WORKER_BLOCKED, SYSTEM_CRITICAL_OPERATION_TIMEOUT]]]]
+[18:47:53] Message queue limit is set to 0 which may lead to potential OOMEs when running cache operations in FULL_ASYNC or PRIMARY_SYNC modes due to message queues growth on sender and receiver sides.
+[18:47:53] Security status [authentication=off, tls/ssl=off]
+[18:47:56] Default character encoding is windows-1251. Specify UTF-8 character encoding by setting -Dfile.encoding=UTF-8 JVM parameter. Differing character encodings across cluster may lead to erratic behavior.
+[18:47:56] Nodes started on local machine require more than 80% of physical RAM what can lead to significant slowdown due to swapping (please decrease JVM heap size, data region size or checkpoint buffer size) [required=20969MB, available=16314MB]
+[18:47:56] Performance suggestions for grid  (fix if possible)
+[18:47:56] To disable, set -DIGNITE_PERFORMANCE_SUGGESTIONS_DISABLED=true
+[18:47:56]   ^-- Enable G1 Garbage Collector (add '-XX:+UseG1GC' to JVM options)
+[18:47:56]   ^-- Specify JVM heap max size (add '-Xmx<size>[g|G|m|M|k|K]' to JVM options)
+[18:47:56]   ^-- Set max direct memory size if getting 'OOME: Direct buffer memory' (add '-XX:MaxDirectMemorySize=<size>[g|G|m|M|k|K]' to JVM options)
+[18:47:56]   ^-- Disable processing of calls to System.gc() (add '-XX:+DisableExplicitGC' to JVM options)
+[18:47:56] Refer to this page for more performance suggestions: https://apacheignite.readme.io/docs/jvm-and-system-tuning
+[18:47:56] 
+[18:47:56] To start Console Management & Monitoring run ignitevisorcmd.{sh|bat}
+[18:47:56] Data Regions Configured:
+[18:47:56]   ^-- default [initSize=256,0 MiB, maxSize=3,2 GiB, persistence=false, lazyMemoryAllocation=true]
+[18:47:56] 
+[18:47:56] Ignite node started OK (id=743456bb)
+[18:47:56] Topology snapshot [ver=3, locNode=743456bb, servers=3, clients=0, state=ACTIVE, CPUs=12, offheap=9.6GB, heap=11.0GB]
+[18:47:56]   ^-- Baseline [id=0, size=3, online=3, offline=0]
+>>> Ignite grid started.
+>>> Started the trainer fitting
+[18:48:54] Ignite node stopped OK [uptime=00:00:58.084]

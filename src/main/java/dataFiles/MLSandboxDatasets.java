@@ -78,7 +78,9 @@ public enum MLSandboxDatasets {
     MNIST_TRAIN_8("src/main/java/dataFiles/mnist_train_8.csv", true, ","),
     MNIST_TRAIN_10("src/main/java/dataFiles/mnist_train_10.csv", true, ","),
     MNIST_TRAIN_12("E:/stuff/MLP_test/src/main/java/dataFiles/mnist_train_12.csv", true, ","),
+    MNIST_TRAIN_12_TRUE("E:/stuff/MLP_test/src/main/java/dataFiles/mnist_train_12_true.csv", true, ","),
     MNIST_TRAIN_200("E:/stuff/MLP_test/src/main/java/dataFiles/mnist_train_200.csv", true, ","),
+    MNIST_TRAIN_200_TRUE("E:/stuff/MLP_test/src/main/java/dataFiles/mnist_train_200_true.csv", true, ","),
     MNIST_TRAIN_15("src/main/java/dataFiles/mnist_train_15.csv", true, ",");
 
     /** Filename. */
