@@ -83,7 +83,7 @@ public class MLPTrainerExample {
                 Vectorizer<Integer, Vector, Integer, Double> vectorizer =
                         new DummyVectorizer<Integer>().labeled(Vectorizer.LabelCoordinate.FIRST);
 
-                KMeansTrainer trainer = new KMeansTrainer().withAmountOfClusters(2);
+                KMeansTrainer trainer = new KMeansTrainer().withAmountOfClusters(3);
 
                 KMeansModel mdl = trainer.fit(
                         ignite,
@@ -94,12 +94,19 @@ public class MLPTrainerExample {
 
                 int totalCnt = dataCache.size();
                 int failCnt = 0;
-                double oneFailure = 0;
-                double oneCount = 1;
-                double twoFailure = 0;
-                double twoCount = 1;
-                double zeroFailure = 0;
-                double zeroCount = 1;
+//                double oneFailure = 0;
+//                double oneCount = 0;
+//                double twoFailure = 0;
+//                double twoCount = 0;
+//                double zeroFailure = 0;
+//                double zeroCount = 0;
+//                double threeFailure = 0;
+//                double threeCount = 0;
+
+                double[] oneArray = {0.0, 0.0, 0.0, 0.0};
+                double[] twoArray = {0.0, 0.0, 0.0, 0.0};
+                double[] zeroArray = {0.0, 0.0, 0.0, 0.0};
+                double[] threeArray = {0.0, 0.0, 0.0, 0.0};
 
                 // Calculate score.
 //                for (int i = 0; i < dataCache.size(); i++) {
@@ -128,37 +135,93 @@ public class MLPTrainerExample {
 
                         double prediction = mdl.predict(inputs);
                         if (groundTruth == new Double(0)) {
-                            zeroCount++;
-                            zeroFailure += Math.abs(prediction - groundTruth) > 0.5 ? 1 : 0;
+//                            zeroCount++;
+//                            zeroFailure += Math.abs(prediction - groundTruth) > 0.5 ? 1 : 0;
+                            zeroArray[(int) prediction] += 1;
                         }
                         if (groundTruth == new Double(1)) {
-                            oneCount++;
-                            oneFailure += Math.abs(prediction - groundTruth) > 0.5 ? 1 : 0;
+//                            oneCount++;
+//                            oneFailure += Math.abs(prediction - groundTruth) > 0.5 ? 1 : 0;
+                            oneArray[(int) prediction] += 1;
                         }
                         if (groundTruth == new Double(2)) {
-                            twoCount++;
-                            twoFailure += Math.abs(prediction - groundTruth) > 0.5 ? 1 : 0;
+//                            twoCount++;
+//                            twoFailure += Math.abs(prediction - groundTruth) > 0.5 ? 1 : 0;
+                            twoArray[(int) prediction] += 1;
+                        }
+                        if (groundTruth == new Double(3)) {
+//                            threeCount++;
+//                            threeFailure += Math.abs(prediction - groundTruth) > 0.5 ? 1 : 0;
+                            threeArray[(int) prediction] += 1;
                         }
                         System.out.printf(">>> | %.4f\t\t\t| %.4f\t\t|\n", prediction, groundTruth);
                     }
 
-                    System.out.print("The zero cluster results\n");
-                    System.out.print("The number of errors is\t");
-                    System.out.println(zeroFailure);
-                    System.out.print("The error percentage is\t");
-                    System.out.println(zeroFailure/zeroCount);
+//                    System.out.print("The zero cluster results\n");
+//                    System.out.print("The number of errors is\t");
+//                    System.out.println(zeroFailure);
+//                    System.out.print("The error percentage is\t");
+//                    System.out.println(zeroFailure/zeroCount);
+//                    System.out.println();
+//
+//                    System.out.print("The one cluster results\n");
+//                    System.out.print("The number of errors is\t");
+//                    System.out.println(oneFailure);
+//                    System.out.print("The error percentage is\t");
+//                    System.out.println(oneFailure/oneCount);
+//                    System.out.println();
+//
+//                    System.out.print("The two cluster results\n");
+//                    System.out.print("The number of errors is\t");
+//                    System.out.println(twoFailure);
+//                    System.out.print("The error percentage is\t");
+//                    System.out.println(twoFailure/twoCount);
+//                    System.out.println();
 
-                    System.out.print("The one cluster results\n");
-                    System.out.print("The number of errors is\t");
-                    System.out.println(oneFailure);
-                    System.out.print("The error percentage is\t");
-                    System.out.println(oneFailure/oneCount);
+                    System.out.println("The zero distribution");
+                    for(int i=0; i<zeroArray.length; i++){
+                        System.out.printf("%.1f",zeroArray[i]);
+                        System.out.print("   ");
+                    }
+//                    System.out.print("The number of errors is\t");
+//                    System.out.println(zeroFailure);
+//                    System.out.print("The error percentage is\t");
+//                    System.out.println(zeroFailure/zeroCount);
+                    System.out.println();
 
-                    System.out.print("The two cluster results\n");
-                    System.out.print("The number of errors is\t");
-                    System.out.println(twoFailure);
-                    System.out.print("The error percentage is\t");
-                    System.out.println(twoFailure/twoCount);
+                    System.out.println("The one distribution");
+                    for(int i=0; i<oneArray.length; i++){
+                        System.out.printf("%.1f",oneArray[i]);
+                        System.out.print("   ");
+                    }
+//                    System.out.print("The number of errors is\t");
+//                    System.out.println(oneFailure);
+//                    System.out.print("The error percentage is\t");
+//                    System.out.println(oneFailure/oneCount);
+                    System.out.println();
+
+                    System.out.println("The two distribution");
+                    for(int i=0; i<twoArray.length; i++){
+                        System.out.printf("%.1f",twoArray[i]);
+                        System.out.print("   ");
+                    }
+//                    System.out.print("The number of errors is\t");
+//                    System.out.println(twoFailure);
+//                    System.out.print("The error percentage is\t");
+//                    System.out.println(twoFailure/twoCount);
+                    System.out.println();
+
+                    System.out.println("The three distribution");
+                    for(int i=0; i<twoArray.length; i++){
+                        System.out.printf("%.1f",threeArray[i]);
+                        System.out.print("   ");
+                    }
+//                    System.out.print("The number of errors is\t");
+//                    System.out.println(threeFailure);
+//                    System.out.print("The error percentage is\t");
+//                    System.out.println(threeFailure/threeCount);
+                    System.out.println();
+
 
                     System.out.println(">>> ---------------------------------");
                     System.out.println(">>> KMeans clustering algorithm over cached dataset usage example completed.");
