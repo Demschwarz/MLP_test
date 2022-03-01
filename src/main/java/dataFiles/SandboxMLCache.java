@@ -106,8 +106,8 @@ public class SandboxMLCache {
      * @return Filled Ignite Cache.
      * @throws FileNotFoundException If file not found.
      */
-    public IgniteCache<Integer, LabeledVector<double[]>> fillCacheWith(MLSandboxDatasets dataset) throws FileNotFoundException {
-        IgniteCache<Integer, LabeledVector<double[]>> cache = getCache();
+    public IgniteCache<Integer, Vector> fillCacheWith(MLSandboxDatasets dataset) throws FileNotFoundException {
+        IgniteCache<Integer, Vector> cache = getCache();
 
         String fileName = dataset.getFileName();
 
@@ -118,13 +118,10 @@ public class SandboxMLCache {
 
         Scanner scanner = new Scanner(file);
 
-        int cnt = -1;
+        int cnt = 0;
         while (scanner.hasNextLine()) {
-//            String row = scanner.nextLine();
             String row = scanner.nextLine();
-            char lbl = row.charAt(0);// для того, чтобы не взять реальное значение, а только данные
-            row = row.substring(2); // для того, чтобы не взять реальное значение, а только данные
-            if (dataset.hasHeader() && cnt == -1) {
+            if (dataset.hasHeader() && cnt == 0) {
                 cnt++;
                 continue;
             }
@@ -141,13 +138,12 @@ public class SandboxMLCache {
                 } catch (NumberFormatException e) {
                     try {
                         data[i] = format.parse(cells[i]).doubleValue();
-                    } catch (ParseException e1) {
+                    }
+                    catch (ParseException e1) {
                         throw new FileParsingException(cells[i], i, Paths.get(dataset.getFileName()));
                     }
                 }
-//            cache.put(cnt++, VectorUtils.of(data));
-            //костыль. из-за того,что в дабл переводится не сам чар, а его код. у нуля он 48, отнимаем 48
-            cache.put(cnt++, new LabeledVector<>(VectorUtils.of(data), new double[] {Double.valueOf(lbl) - Double.valueOf(48)}));
+            cache.put(cnt++, VectorUtils.of(data));
         }
         return cache;
     }
@@ -230,8 +226,8 @@ public class SandboxMLCache {
      *
      * @return Filled Ignite Cache.
      */
-    private IgniteCache<Integer, LabeledVector<double[]>> getCache() {
-        CacheConfiguration<Integer, LabeledVector<double[]>> cacheConfiguration = new CacheConfiguration<>();
+    private IgniteCache<Integer, Vector> getCache() {
+        CacheConfiguration<Integer, Vector> cacheConfiguration = new CacheConfiguration<>();
 //        cacheConfiguration.setName("ML_EXAMPLE_" + UUID.randomUUID());
         cacheConfiguration.setName("cacheML");
         cacheConfiguration.setAffinity(new RendezvousAffinityFunction(false, 1024));
