@@ -70,20 +70,16 @@ public class MLPTrainerExample {
             trainingSetCfg.setName("TRAINING_SET");
             trainingSetCfg.setAffinity(new RendezvousAffinityFunction(false, 10));
 
-//            IgniteCache<Integer, LabeledVector<double[]>> trainingSet = null;
-//            IgniteCache<Integer, Vector> dataCache = null;
             IgniteCache<Integer, Vector> dataCache = null;
             try {
-//                trainingSet = ignite.createCache(trainingSetCfg);
-
-                // working with dataCache
                 dataCache = new SandboxMLCache(ignite).fillCacheWith(MLSandboxDatasets.MNIST_TRAIN_0_1_2);
-//                dataCache = ignite.createCache(trainingSetCfg).fillCacheWith(MLSandboxDatasets.MNIST_TRAIN_12);
 
                 Vectorizer<Integer, Vector, Integer, Double> vectorizer =
                         new DummyVectorizer<Integer>().labeled(Vectorizer.LabelCoordinate.FIRST);
 
-                KMeansTrainer trainer = new KMeansTrainer().withAmountOfClusters(3);
+                //Явно задаём количество кластеров
+
+                KMeansTrainer trainer = new KMeansTrainer().withAmountOfClusters(2);
 
                 KMeansModel mdl = trainer.fit(
                         ignite,
@@ -92,40 +88,18 @@ public class MLPTrainerExample {
                 );
                 System.out.println(">>> Ended the trainer fitting");
 
-                int totalCnt = dataCache.size();
-                int failCnt = 0;
-//                double oneFailure = 0;
-//                double oneCount = 0;
-//                double twoFailure = 0;
-//                double twoCount = 0;
-//                double zeroFailure = 0;
-//                double zeroCount = 0;
-//                double threeFailure = 0;
-//                double threeCount = 0;
 
-                double[] oneArray = {0.0, 0.0, 0.0, 0.0};
-                double[] twoArray = {0.0, 0.0, 0.0, 0.0};
-                double[] zeroArray = {0.0, 0.0, 0.0, 0.0};
-                double[] threeArray = {0.0, 0.0, 0.0, 0.0};
+                double[] oneArray = {0.0, 0.0};
+                double[] twoArray = {0.0, 0.0};
+                double[] zeroArray = {0.0, 0.0};
+                double[] threeArray = {0.0, 0.0};
+                double[] fourArray = {0.0, 0.0};
+                double[] fiveArray = {0.0, 0.0};
+                double[] sixArray = {0.0, 0.0};
+                double[] sevenArray = {0.0, 0.0};
+                double[] eightArray = {0.0, 0.0};
+                double[] nineArray = {0.0, 0.0};
 
-                // Calculate score.
-//                for (int i = 0; i < dataCache.size(); i++) {
-//                    LabeledVector<double[]> pnt = dataCache.get(i);
-////                    Matrix predicted = mlp.predict(new DenseMatrix(
-////                            new double[][] {{
-////                                pnt.features().get(0),
-////                                    pnt.features().get(1)}}));
-////                    Matrix predicted = mlp.predict(new DenseMatrix(
-////                                                pnt.features().asArray(), 10));
-//                    Matrix predicted = mlp.predict(new DenseMatrix(
-////                                                new double[][]{pnt.features().asArray(), {}, {}, {}, {}, {}, {}, {}, {}, {}}));
-//                            new double[][]{pnt.features().asArray()}));
-////                    Matrix predicted = mlp.predict(pnt.features().toMatrix(true));
-//                    double predictedVal = predicted.get(0, 0);
-//                    double lbl = pnt.label()[0];
-//                    System.out.printf(">>> key: %d\t\t predicted: %.4f\t\tlabel: %.4f\n", i, predictedVal, lbl);
-//                    failCnt += Math.abs(predictedVal - lbl) < 0.5 ? 0 : 1;
-//                }
 
                 try (QueryCursor<Cache.Entry<Integer, Vector>> observations = dataCache.query(new ScanQuery<>())) {
                     for (Cache.Entry<Integer, Vector> observation : observations) {
@@ -135,58 +109,43 @@ public class MLPTrainerExample {
 
                         double prediction = mdl.predict(inputs);
                         if (groundTruth == new Double(0)) {
-//                            zeroCount++;
-//                            zeroFailure += Math.abs(prediction - groundTruth) > 0.5 ? 1 : 0;
                             zeroArray[(int) prediction] += 1;
                         }
                         if (groundTruth == new Double(1)) {
-//                            oneCount++;
-//                            oneFailure += Math.abs(prediction - groundTruth) > 0.5 ? 1 : 0;
                             oneArray[(int) prediction] += 1;
                         }
                         if (groundTruth == new Double(2)) {
-//                            twoCount++;
-//                            twoFailure += Math.abs(prediction - groundTruth) > 0.5 ? 1 : 0;
                             twoArray[(int) prediction] += 1;
                         }
                         if (groundTruth == new Double(3)) {
-//                            threeCount++;
-//                            threeFailure += Math.abs(prediction - groundTruth) > 0.5 ? 1 : 0;
                             threeArray[(int) prediction] += 1;
+                        }
+                        if (groundTruth == new Double(4)) {
+                            fourArray[(int) prediction] += 1;
+                        }
+                        if (groundTruth == new Double(5)) {
+                            fiveArray[(int) prediction] += 1;
+                        }
+                        if (groundTruth == new Double(6)) {
+                            sixArray[(int) prediction] += 1;
+                        }
+                        if (groundTruth == new Double(7)) {
+                            sevenArray[(int) prediction] += 1;
+                        }
+                        if (groundTruth == new Double(8)) {
+                            eightArray[(int) prediction] += 1;
+                        }
+                        if (groundTruth == new Double(9)) {
+                            nineArray[(int) prediction] += 1;
                         }
                         System.out.printf(">>> | %.4f\t\t\t| %.4f\t\t|\n", prediction, groundTruth);
                     }
-
-//                    System.out.print("The zero cluster results\n");
-//                    System.out.print("The number of errors is\t");
-//                    System.out.println(zeroFailure);
-//                    System.out.print("The error percentage is\t");
-//                    System.out.println(zeroFailure/zeroCount);
-//                    System.out.println();
-//
-//                    System.out.print("The one cluster results\n");
-//                    System.out.print("The number of errors is\t");
-//                    System.out.println(oneFailure);
-//                    System.out.print("The error percentage is\t");
-//                    System.out.println(oneFailure/oneCount);
-//                    System.out.println();
-//
-//                    System.out.print("The two cluster results\n");
-//                    System.out.print("The number of errors is\t");
-//                    System.out.println(twoFailure);
-//                    System.out.print("The error percentage is\t");
-//                    System.out.println(twoFailure/twoCount);
-//                    System.out.println();
 
                     System.out.println("The zero distribution");
                     for(int i=0; i<zeroArray.length; i++){
                         System.out.printf("%.1f",zeroArray[i]);
                         System.out.print("   ");
                     }
-//                    System.out.print("The number of errors is\t");
-//                    System.out.println(zeroFailure);
-//                    System.out.print("The error percentage is\t");
-//                    System.out.println(zeroFailure/zeroCount);
                     System.out.println();
 
                     System.out.println("The one distribution");
@@ -194,10 +153,6 @@ public class MLPTrainerExample {
                         System.out.printf("%.1f",oneArray[i]);
                         System.out.print("   ");
                     }
-//                    System.out.print("The number of errors is\t");
-//                    System.out.println(oneFailure);
-//                    System.out.print("The error percentage is\t");
-//                    System.out.println(oneFailure/oneCount);
                     System.out.println();
 
                     System.out.println("The two distribution");
@@ -205,32 +160,61 @@ public class MLPTrainerExample {
                         System.out.printf("%.1f",twoArray[i]);
                         System.out.print("   ");
                     }
-//                    System.out.print("The number of errors is\t");
-//                    System.out.println(twoFailure);
-//                    System.out.print("The error percentage is\t");
-//                    System.out.println(twoFailure/twoCount);
                     System.out.println();
 
                     System.out.println("The three distribution");
-                    for(int i=0; i<twoArray.length; i++){
+                    for(int i=0; i<threeArray.length; i++){
                         System.out.printf("%.1f",threeArray[i]);
                         System.out.print("   ");
                     }
-//                    System.out.print("The number of errors is\t");
-//                    System.out.println(threeFailure);
-//                    System.out.print("The error percentage is\t");
-//                    System.out.println(threeFailure/threeCount);
+                    System.out.println();
+
+                    System.out.println("The four distribution");
+                    for(int i=0; i<fourArray.length; i++){
+                        System.out.printf("%.1f",fourArray[i]);
+                        System.out.print("   ");
+                    }
+                    System.out.println();
+
+                    System.out.println("The five distribution");
+                    for(int i=0; i<fiveArray.length; i++){
+                        System.out.printf("%.1f",fiveArray[i]);
+                        System.out.print("   ");
+                    }
+                    System.out.println();
+
+                    System.out.println("The six distribution");
+                    for(int i=0; i<sixArray.length; i++){
+                        System.out.printf("%.1f",sixArray[i]);
+                        System.out.print("   ");
+                    }
+                    System.out.println();
+
+                    System.out.println("The seven distribution");
+                    for(int i=0; i<sevenArray.length; i++){
+                        System.out.printf("%.1f",sevenArray[i]);
+                        System.out.print("   ");
+                    }
+                    System.out.println();
+
+                    System.out.println("The eight distribution");
+                    for(int i=0; i<eightArray.length; i++){
+                        System.out.printf("%.1f",eightArray[i]);
+                        System.out.print("   ");
+                    }
+                    System.out.println();
+
+                    System.out.println("The nine distribution");
+                    for(int i=0; i<nineArray.length; i++){
+                        System.out.printf("%.1f",nineArray[i]);
+                        System.out.print("   ");
+                    }
                     System.out.println();
 
 
                     System.out.println(">>> ---------------------------------");
                     System.out.println(">>> KMeans clustering algorithm over cached dataset usage example completed.");
                 }
-
-//                double failRatio = (double) failCnt / totalCnt;
-//
-//                System.out.println("\n>>> Fail percentage: " + (failRatio * 100) + "%.");
-//                System.out.println("\n>>> Distributed multilayer perceptron example completed.");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } finally {
